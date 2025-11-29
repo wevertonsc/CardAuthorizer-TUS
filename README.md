@@ -89,7 +89,7 @@ This application was developed as part of the Object-Oriented Programming I cour
 ### Design Pattern
 The application follows a layered architecture pattern:
 
-![SystemArchitecture.png](\uml%2Fimages%2FSystemArchitecture.png)
+![SystemArchitecture.png](/uml%2Fimages%2FSystemArchitecture.png)
 
 ### Core Components
 
@@ -688,3 +688,4 @@ For questions or support, please contact:
 **Version**: 1.0.0  
 
 **Last Updated**: November 2025
+
