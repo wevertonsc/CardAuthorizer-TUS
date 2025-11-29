@@ -3,10 +3,10 @@
 ## Athlone Campus
 
 ---
-**Student**: Weverton de Souza Castanho  
-**Email**: wevertonsc@gmail.com  
-**Course**: Object-Oriented Programming I (AL_KCNCM_9_1) 29468  
-**Date**: November 2025
+***Student***: Weverton de Souza Castanho  
+***Email***: wevertonsc@gmail.com  
+***Course****: Object-Oriented Programming I (AL_KCNCM_9_1) 29468  
+***Date***: November 2025
 ---
 # Card Authorizer Application
 
@@ -688,4 +688,5 @@ For questions or support, please contact:
 **Version**: 1.0.0  
 
 **Last Updated**: November 2025
+
 
