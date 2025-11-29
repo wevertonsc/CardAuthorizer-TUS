@@ -1,0 +1,115 @@
+@startuml Card_Authorizer_Class_Diagram
+!theme plain
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+
+title Card Authorizer - Domain Model Class Diagram
+
+class Card {
+    - id: Long
+    - number: String {unique, not null}
+    - expiration: String
+    - cvv: String
+    - limits: Float
+    - balance: Float
+    --
+    + getId(): Long
+    + getNumber(): String
+    + getExpiration(): String
+    + getCvv(): String
+    + getLimits(): Float
+    + getBalance(): Float
+    + setBalance(Float): void
+}
+
+class Client {
+    - id: Long
+    - name: String
+    - email: String
+    --
+    + getId(): Long
+    + getName(): String
+    + getEmail(): String
+}
+
+class Brand {
+    - id: Long
+    - name: String
+    --
+    + getId(): Long
+    + getName(): String
+}
+
+class History {
+    - id: Long
+    - dateOperation: LocalDateTime
+    - valueOperation: Float
+    - typeOperation: String
+    --
+    + getDateOperation(): LocalDateTime
+    + getValueOperation(): Float
+    + getTypeOperation(): String
+}
+
+class Messages {
+    - id: Long
+    - message: String
+    - description: String
+    --
+    + getId(): Long
+    + getMessage(): String
+    + getDescription(): String
+}
+
+class OperationDAO {
+    - name: String
+    - number: String
+    - expiration: String
+    - cvv: String
+    - email: String
+    - brand: String
+    - type: String
+    - value: Float
+    --
+    + All getters/setters
+}
+
+' Relationships
+Card "1" --> "1" Client : belongs to
+Card "1" --> "1" Brand : has
+Card "1" --> "0..*" History : has
+History "1" --> "1" Messages : contains
+History "*" --> "1" Card : references
+
+note right of Card
+  Main entity representing
+  a credit card with validation
+  rules and balance management
+end note
+
+note right of History
+  Audit trail of all
+  transaction operations
+  performed on cards
+end note
+
+note right of OperationDAO
+  Data Transfer Object
+  for transaction requests
+  from API clients
+end note
+
+note right of Messages
+  Predefined messages for
+  operation results:
+  - ID 1: Invalid card
+  - ID 2: Invalid cardholder
+  - ID 3: Invalid expiration
+  - ID 4: Invalid CVV
+  - ID 5: Insufficient balance
+  - ID 6: Success
+end note
+
+@enduml

@@ -1,0 +1,164 @@
+@startuml Card_Authorizer_Transaction_Sequence
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipant underline
+skinparam sequenceLifeLineBorderColor #2C3E50
+
+title Card Authorizer - Transaction Processing Sequence
+
+actor Client
+participant "OperationController" as Controller
+participant "OperationService" as Service
+participant "JavaLuhnAlgorithm" as Luhn
+participant "CardRepository" as CardRepo
+participant "Card" as Card
+participant "HistoryRepository" as HistoryRepo
+participant "MessagesRepository" as MsgRepo
+database "H2 Database" as DB
+
+Client -> Controller: POST /api/v1/operation\n(OperationDAO)
+activate Controller
+
+Controller -> Service: executeOperation(operation)
+activate Service
+
+' Step 1: Luhn Validation
+Service -> Service: Remove spaces from card number
+Service -> Luhn: validateCreditCardNumber(number)
+activate Luhn
+Luhn --> Service: boolean (valid/invalid)
+deactivate Luhn
+
+alt Card number invalid (Luhn fails)
+    Service -> MsgRepo: findMessagesById(1)
+    activate MsgRepo
+    MsgRepo -> DB: SELECT message
+    DB --> MsgRepo: ERROR message
+    MsgRepo --> Service: Messages(ERROR)
+    deactivate MsgRepo
+    Service --> Controller: Messages(ERROR)
+    Controller --> Client: 200 OK (ERROR)
+else Card number valid
+
+    ' Step 2: Find Card
+    Service -> CardRepo: findCardByNumber(number)
+    activate CardRepo
+    CardRepo -> DB: SELECT card
+    DB --> CardRepo: Card entity
+    CardRepo --> Service: Card
+    deactivate CardRepo
+
+    alt Card not found
+        Service -> MsgRepo: findMessagesById(1)
+        activate MsgRepo
+        MsgRepo --> Service: ERROR message
+        deactivate MsgRepo
+        Service --> Controller: Messages(ERROR)
+        Controller --> Client: 200 OK (ERROR)
+    else Card found
+
+        ' Step 3: Validate Card Data
+        Service -> Service: Validate cardholder name
+
+        alt Name invalid
+            Service -> MsgRepo: findMessagesById(2)
+            activate MsgRepo
+            MsgRepo --> Service: ERROR message
+            deactivate MsgRepo
+            Service --> Controller: Messages(ERROR)
+            Controller --> Client: 200 OK (ERROR)
+        else Name valid
+
+            Service -> Service: Validate email
+
+            alt Email invalid
+                Service -> MsgRepo: findMessagesById(2)
+                activate MsgRepo
+                MsgRepo --> Service: ERROR message
+                deactivate MsgRepo
+                Service --> Controller: Messages(ERROR)
+                Controller --> Client: 200 OK (ERROR)
+            else Email valid
+
+                Service -> Service: Validate expiration
+
+                alt Expiration invalid
+                    Service -> MsgRepo: findMessagesById(3)
+                    activate MsgRepo
+                    MsgRepo --> Service: ERROR message
+                    deactivate MsgRepo
+                    Service --> Controller: Messages(ERROR)
+                    Controller --> Client: 200 OK (ERROR)
+                else Expiration valid
+
+                    Service -> Service: Validate CVV
+
+                    alt CVV invalid
+                        Service -> MsgRepo: findMessagesById(4)
+                        activate MsgRepo
+                        MsgRepo --> Service: ERROR message
+                        deactivate MsgRepo
+                        Service --> Controller: Messages(ERROR)
+                        Controller --> Client: 200 OK (ERROR)
+                    else CVV valid
+
+                        ' Step 4: Check Balance
+                        Service -> Card: getBalance()
+                        activate Card
+                        Card --> Service: current balance
+                        deactivate Card
+
+                        alt Insufficient balance
+                            Service -> MsgRepo: findMessagesById(5)
+                            activate MsgRepo
+                            MsgRepo --> Service: ERROR message
+                            deactivate MsgRepo
+                            Service --> Controller: Messages(ERROR)
+                            Controller --> Client: 200 OK (ERROR)
+                        else Sufficient balance
+
+                            ' Step 5: Update Balance
+                            Service -> Card: setBalance(newBalance)
+                            activate Card
+                            Card --> Service: void
+                            deactivate Card
+
+                            Service -> CardRepo: save(card)
+                            activate CardRepo
+                            CardRepo -> DB: UPDATE card
+                            DB --> CardRepo: saved card
+                            CardRepo --> Service: Card
+                            deactivate CardRepo
+
+                            ' Step 6: Create History
+                            Service -> Service: Create History entity
+                            Service -> HistoryRepo: save(history)
+                            activate HistoryRepo
+                            HistoryRepo -> DB: INSERT history
+                            DB --> HistoryRepo: saved history
+                            HistoryRepo --> Service: History
+                            deactivate HistoryRepo
+
+                            ' Step 7: Success Response
+                            Service -> MsgRepo: findMessagesById(6)
+                            activate MsgRepo
+                            MsgRepo -> DB: SELECT message
+                            DB --> MsgRepo: SUCCESS message
+                            MsgRepo --> Service: Messages(SUCCESS)
+                            deactivate MsgRepo
+
+                            Service --> Controller: Messages(SUCCESS)
+                            deactivate Service
+                            Controller --> Client: 200 OK (SUCCESS)
+                            deactivate Controller
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+@enduml

@@ -1,0 +1,90 @@
+@startuml UC001_Get_Existing_Card_Sequence
+!define SUCCESS_COLOR #C8E6C9
+!define QUERY_COLOR #E1F5FE
+
+title UC-001: Retrieve Existing Card - Sequence Diagram
+
+actor "Client System" as Client
+participant "CardController" as Controller
+participant "CardService" as Service
+participant "CardRepository" as CardRepo
+participant "ClientRepository" as ClientRepo
+participant "BrandRepository" as BrandRepo
+database "H2 Database" as DB
+
+== Card Query Request ==
+
+Client -> Controller: GET /api/v1/card/4532015112830366
+activate Controller
+
+Controller -> Service: getCard("4532015112830366")
+activate Service
+
+Service -> CardRepo: findCardByNumber("4532015112830366")
+activate CardRepo
+
+CardRepo -> DB: SELECT * FROM card\nWHERE number = '4532015112830366'
+activate DB
+DB --> CardRepo: Card Entity (id=1)
+deactivate DB
+
+CardRepo --> Service: Card Object
+deactivate CardRepo
+
+== Eager Loading Related Entities ==
+
+Service -> ClientRepo: findById(card.clientId)
+activate ClientRepo
+
+ClientRepo -> DB: SELECT * FROM client\nWHERE id = 1
+activate DB
+DB --> ClientRepo: Client Entity
+deactivate DB
+
+ClientRepo --> Service: Client Object\n(Plato of Athens)
+deactivate ClientRepo
+
+Service -> BrandRepo: findById(card.brandId)
+activate BrandRepo
+
+BrandRepo -> DB: SELECT * FROM brand\nWHERE id = 1
+activate DB
+DB --> BrandRepo: Brand Entity
+deactivate DB
+
+BrandRepo --> Service: Brand Object\n(Visa)
+deactivate BrandRepo
+
+== Load Transaction History ==
+
+Service -> DB: SELECT * FROM history\nWHERE card_id = 1\nORDER BY date_operation DESC
+activate DB
+DB --> Service: List<History>
+deactivate DB
+
+== Response Construction ==
+
+Service -> Service: Construct Complete\nCard DTO
+note right
+  Card {
+    id: 1,
+    number: "4532015112830366",
+    balance: 3000.00,
+    client: {...},
+    brand: {...},
+    history: [...]
+  }
+end note
+
+Service --> Controller: Card DTO
+deactivate Service
+
+Controller --> Client: HTTP 200 OK\nJSON Response
+deactivate Controller
+
+note over Client
+  All related entities loaded
+  Transaction history included
+end note
+
+@enduml

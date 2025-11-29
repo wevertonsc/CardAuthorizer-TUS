@@ -1,0 +1,108 @@
+@startuml Card_Authorizer_State_Diagram
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam stateBorderColor #2C3E50
+skinparam stateBackgroundColor #ECF0F1
+
+title Card Authorizer - Transaction Processing State Diagram
+
+[*] --> ReceiveRequest : POST /api/v1/operation
+
+state ReceiveRequest {
+    [*] --> ParseJSON
+    ParseJSON --> ValidateJSON
+    ValidateJSON --> [*]
+}
+
+ReceiveRequest --> LuhnValidation : Request parsed
+
+state LuhnValidation {
+    [*] --> RemoveSpaces
+    RemoveSpaces --> ApplyLuhnAlgorithm
+    ApplyLuhnAlgorithm --> CheckResult
+    CheckResult --> [*]
+}
+
+LuhnValidation --> CardLookup : Luhn valid
+LuhnValidation --> ReturnError : Luhn invalid\n(Message ID: 1)
+
+state CardLookup {
+    [*] --> QueryDatabase
+    QueryDatabase --> CheckCardExists
+    CheckCardExists --> [*]
+}
+
+CardLookup --> CardDataValidation : Card found
+CardLookup --> ReturnError : Card not found\n(Message ID: 1)
+
+state CardDataValidation {
+    [*] --> ValidateName
+    ValidateName --> ValidateEmail : Name matches
+    ValidateEmail --> ValidateExpiration : Email matches
+    ValidateExpiration --> ValidateCVV : Expiration matches
+    ValidateCVV --> [*] : CVV matches
+
+    ValidateName --> InvalidData : Name mismatch
+    ValidateEmail --> InvalidData : Email mismatch
+    ValidateExpiration --> InvalidData : Expiration mismatch
+    ValidateCVV --> InvalidData : CVV mismatch
+}
+
+CardDataValidation --> BalanceCheck : All data valid
+CardDataValidation --> ReturnError : Invalid data\n(Message ID: 2/3/4)
+
+state BalanceCheck {
+    [*] --> GetCurrentBalance
+    GetCurrentBalance --> CompareWithAmount
+    CompareWithAmount --> [*]
+}
+
+BalanceCheck --> ProcessTransaction : Balance sufficient
+BalanceCheck --> ReturnError : Insufficient balance\n(Message ID: 5)
+
+state ProcessTransaction {
+    [*] --> CalculateNewBalance
+    CalculateNewBalance --> UpdateCardBalance
+    UpdateCardBalance --> SaveCard
+    SaveCard --> CreateHistoryRecord
+    CreateHistoryRecord --> SaveHistory
+    SaveHistory --> [*]
+}
+
+ProcessTransaction --> ReturnSuccess : Transaction complete
+
+state ReturnSuccess {
+    [*] --> GetSuccessMessage
+    GetSuccessMessage --> BuildResponse
+    BuildResponse --> [*]
+}
+
+state ReturnError {
+    [*] --> GetErrorMessage
+    GetErrorMessage --> BuildErrorResponse
+    BuildErrorResponse --> [*]
+}
+
+ReturnSuccess --> [*] : 200 OK (SUCCESS)
+ReturnError --> [*] : 200 OK (ERROR)
+
+note right of LuhnValidation
+  Removes spaces and validates
+  card number using Luhn
+  checksum algorithm
+end note
+
+note right of CardDataValidation
+  Validates all cardholder
+  information against
+  stored card data
+end note
+
+note right of ProcessTransaction
+  Updates balance and creates
+  audit trail only if all
+  validations pass
+end note
+
+@enduml

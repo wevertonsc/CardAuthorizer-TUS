@@ -1,0 +1,81 @@
+@startuml Card_Authorizer_ERD
+
+skinparam backgroundColor #FFFFFF
+skinparam linetype ortho
+skinparam shadowing false
+
+title Card Authorizer - Entity Relationship Diagram
+
+entity "client" as client {
+    * id : BIGINT <<PK>>
+    --
+    name : VARCHAR(255)
+    email : VARCHAR(255)
+}
+
+entity "brand" as brand {
+    * id : BIGINT <<PK>>
+    --
+    name : VARCHAR(255)
+}
+
+entity "card" as card {
+    * id : BIGINT <<PK>>
+    --
+    * number : VARCHAR(255) <<UNIQUE>>
+    expiration : VARCHAR(255)
+    cvv : VARCHAR(255)
+    limits : FLOAT
+    balance : FLOAT
+    client_id : BIGINT <<FK>>
+    brand_id : BIGINT <<FK>>
+}
+
+entity "messages" as messages {
+    * id : BIGINT <<PK>>
+    --
+    message : VARCHAR(255)
+    description : VARCHAR(255)
+}
+
+entity "history" as history {
+    * id : BIGINT <<PK>>
+    --
+    date_operation : TIMESTAMP
+    value_operation : FLOAT
+    type_operation : VARCHAR(255)
+    card_id : BIGINT <<FK>>
+    messages_id : BIGINT <<FK>>
+}
+
+client ||--o{ card : "owns"
+brand ||--o{ card : "categorizes"
+card ||--o{ history : "has"
+messages ||--o{ history : "describes"
+
+note right of card
+  Main entity storing
+  credit card information
+  with unique card number
+  constraint
+end note
+
+note right of history
+  Audit trail of all
+  transaction operations
+  with timestamp and
+  result messages
+end note
+
+note left of messages
+  Predefined operation
+  result messages:
+  1 = Invalid card
+  2 = Invalid cardholder
+  3 = Invalid expiration
+  4 = Invalid CVV
+  5 = Insufficient balance
+  6 = Success
+end note
+
+@enduml

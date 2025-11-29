@@ -1,0 +1,136 @@
+@startuml UC003_Valid_Purchase_Activity
+!define SUCCESS_COLOR #C8E6C9
+!define ERROR_COLOR #FFCDD2
+!define PROCESS_COLOR #E1F5FE
+
+title UC-003: Process Valid Purchase - Activity Diagram
+
+|Merchant System|
+start
+:Submit Purchase Request;
+note right
+  POST /api/v1/operation
+  {
+    "name": "Plato of Athens",
+    "number": "4532015112830366",
+    "cvv": "123",
+    "value": 100.00
+  }
+end note
+
+|Card Authorizer System|
+:Receive Transaction Request;
+
+:Validate JSON Format;
+
+if (JSON Valid?) then (yes)
+  :Apply Luhn Algorithm;
+  
+  if (Card Number Valid?) then (yes)
+    :Query Database for Card;
+    
+    if (Card Exists?) then (yes)
+      :Retrieve Card Details;
+      
+      :Validate Cardholder Name;
+      
+      if (Name Matches?) then (yes)
+        :Validate CVV;
+        
+        if (CVV Matches?) then (yes)
+          :Validate Expiration Date;
+          
+          if (Not Expired?) then (yes)
+            :Validate Email Format;
+            
+            if (Email Valid?) then (yes)
+              :Check Available Balance;
+              note right
+                Available: $3,000.00
+                Required: $100.00
+              end note
+              
+              if (Balance Sufficient?) then (yes)
+                :Calculate New Balance;
+                note right
+                  $3,000.00 - $100.00 = $2,900.00
+                end note
+                
+                |Database|
+                :Begin Transaction;
+                
+                :Update Card Balance;
+                note right
+                  SET balance = 2900.00
+                  WHERE card_id = 1
+                end note
+                
+                :Create History Record;
+                note right
+                  INSERT INTO history
+                  (balance, value, type, date)
+                  VALUES (2900, 100, 'PURCHASE', NOW())
+                end note
+                
+                :Commit Transaction;
+                
+                |Card Authorizer System|
+                :Generate Success Response;
+                note right
+                  {
+                    "id": 6,
+                    "message": "SUCCESS",
+                    "description": "Operation completed"
+                  }
+                end note
+                
+                :Return HTTP 200 OK;
+
+              else (insufficient)
+                :Return INSUFFICIENT_BALANCE;
+                stop
+              endif
+
+            else (invalid)
+              :Return INVALID_EMAIL;
+              stop
+            endif
+
+          else (expired)
+            :Return EXPIRED_CARD;
+            stop
+          endif
+
+        else (mismatch)
+          :Return INVALID_CVV;
+          :Log Security Event;
+          stop
+        endif
+
+      else (mismatch)
+        :Return INVALID_NAME;
+        stop
+      endif
+
+    else (not found)
+      :Return CARD_NOT_FOUND;
+      stop
+    endif
+
+  else (invalid)
+    :Return INVALID_CARD;
+    :Log Security Event;
+    stop
+  endif
+
+else (invalid)
+  :Return BAD_REQUEST;
+  stop
+endif
+
+|Merchant System|
+:Receive Success Response;
+:Update Transaction Status;
+stop
+
+@enduml

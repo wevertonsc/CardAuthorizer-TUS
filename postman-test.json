@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "card-authorizer-simple",
+    "name": "Card Authorizer",
+    "description": "Test collection for Card Authorizer API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Get Existing Card",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/card/4532015112830366",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "card", "4532015112830366"]
+        }
+      }
+    },
+    {
+      "name": "2. Get Non-Existent Card",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/card/9999999999999999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "card", "9999999999999999"]
+        }
+      }
+    },
+    {
+      "name": "3. Valid Purchase",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Plato of Athens\",\n    \"number\": \"4532015112830366\",\n    \"expiration\": \"12/25\",\n    \"cvv\": \"123\",\n    \"email\": \"plato.of.athens@macunaima.com\",\n    \"brand\": \"Visa\",\n    \"type\": \"PURCHASE\",\n    \"value\": 100.00\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/operation",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "operation"]
+        }
+      }
+    },
+    {
+      "name": "4. Purchase - Invalid Card",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Plato of Athens\",\n    \"number\": \"1234567890123456\",\n    \"expiration\": \"12/25\",\n    \"cvv\": \"123\",\n    \"email\": \"plato.of.athens@macunaima.com\",\n    \"brand\": \"Visa\",\n    \"type\": \"PURCHASE\",\n    \"value\": 100.00\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/operation",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "operation"]
+        }
+      }
+    },
+    {
+      "name": "5. Purchase - Incorrect CVV",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Plato of Athens\",\n    \"number\": \"4532015112830366\",\n    \"expiration\": \"12/25\",\n    \"cvv\": \"999\",\n    \"email\": \"plato.of.athens@macunaima.com\",\n    \"brand\": \"Visa\",\n    \"type\": \"PURCHASE\",\n    \"value\": 100.00\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/operation",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "operation"]
+        }
+      }
+    },
+    {
+      "name": "6. Purchase - Insufficient Balance",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Plato of Athens\",\n    \"number\": \"4532015112830366\",\n    \"expiration\": \"12/25\",\n    \"cvv\": \"123\",\n    \"email\": \"plato.of.athens@macunaima.com\",\n    \"brand\": \"Visa\",\n    \"type\": \"PURCHASE\",\n    \"value\": 99999.00\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/operation",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "operation"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8088",
+      "type": "string"
+    }
+  ]
+}

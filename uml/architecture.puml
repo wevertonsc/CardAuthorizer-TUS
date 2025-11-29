@@ -1,0 +1,130 @@
+@startuml Card_Authorizer_Architecture
+
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam ArrowColor #2C3E50
+skinparam componentBorderColor #34495E
+skinparam componentBackgroundColor #ECF0F1
+skinparam packageBorderColor #34495E
+skinparam packageBackgroundColor #FFFFFF
+
+title Card Authorizer - System Architecture
+
+package "Presentation Layer" {
+    [CardController] as CC
+    [OperationController] as OC
+}
+
+package "Business Logic Layer" {
+    [CardService] as CS
+    [OperationService] as OS
+}
+
+package "Utility Layer" {
+    [JavaLuhnAlgorithm] as JLA
+    [CreditCardBrand] as CCB
+}
+
+package "Data Access Layer" {
+    [CardRepo] as CR
+    [ClientRepo] as CLR
+    [BrandRepo] as BR
+    [HistoryRepo] as HR
+    [MessagesRepo] as MR
+}
+
+package "Domain Model" {
+    [Card] as CARD
+    [Client] as CLIENT
+    [Brand] as BRAND
+    [History] as HIST
+    [Messages] as MSG
+}
+
+database "H2 Database" as DB
+
+' Controller to Service connections
+CC --> CS : uses
+OC --> OS : uses
+
+' Service to Repository connections
+CS --> CR : uses
+OS --> CR : uses
+OS --> HR : uses
+OS --> MR : uses
+
+' Service to Utility connections
+OS --> JLA : validates with
+OS --> CCB : identifies with
+
+' Repository to Model connections
+CR --> CARD : manages
+CLR --> CLIENT : manages
+BR --> BRAND : manages
+HR --> HIST : manages
+MR --> MSG : manages
+
+' Repository to Database connections
+CR --> DB : persists
+CLR --> DB : persists
+BR --> DB : persists
+HR --> DB : persists
+MR --> DB : persists
+
+' Model relationships
+CARD --> CLIENT : belongs to
+CARD --> BRAND : has
+HIST --> CARD : references
+HIST --> MSG : contains
+
+note right of CC
+  **CardController**
+  Exposes REST endpoint
+  GET /api/v1/card/{number}
+  Returns card details with
+  client and brand info
+end note
+
+note right of OC
+  **OperationController**
+  Processes transactions
+  POST /api/v1/operation
+  Validates and executes
+  card operations
+end note
+
+note right of OS
+  **OperationService**
+  Core business logic:
+  - Luhn validation
+  - Card data validation
+  - Balance management
+  - History creation
+end note
+
+note right of JLA
+  **JavaLuhnAlgorithm**
+  Validates card numbers
+  using Luhn checksum
+  algorithm
+end note
+
+note bottom of CARD
+  **Domain Entities**
+  Card: number, cvv, balance
+  Client: name, email
+  Brand: Visa, Mastercard
+  History: audit trail
+  Messages: result codes
+end note
+
+note right of DB
+  **H2 Database**
+  In-memory database
+  JDBC URL: jdbc:h2:mem:card_authorizer
+  Auto-creates schema
+  from JPA entities
+end note
+
+@enduml

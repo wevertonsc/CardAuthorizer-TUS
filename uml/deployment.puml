@@ -1,0 +1,81 @@
+@startuml Card_Authorizer_Deployment_Diagram
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam nodeBackgroundColor #ECF0F1
+skinparam componentStyle rectangle
+
+title Card Authorizer - Deployment Diagram
+
+node "Client Device" {
+    component [Postman Client] as Postman
+    component [Web Browser] as Browser
+    component [Mobile App] as Mobile
+}
+
+node "Application Server" {
+    component "Spring Boot\nEmbedded Tomcat\nPort: 80" as Server {
+
+        artifact "card_authorizer.jar" {
+            component [REST Controllers] as Controllers
+            component [Service Layer] as Services
+            component [Repository Layer] as Repositories
+            component [Domain Model] as Model
+            component [Utilities] as Utils
+        }
+
+        component [Spring Framework] as Spring
+        component [Hibernate/JPA] as Hibernate
+    }
+}
+
+database "H2 Database Server" {
+    storage "In-Memory Database" as H2DB {
+        frame "Tables" {
+            storage "card"
+            storage "client"
+            storage "brand"
+            storage "history"
+            storage "messages"
+        }
+    }
+}
+
+' Connections
+Postman -down-> Server : HTTP/REST\n(Port 80)
+Browser -down-> Server : HTTP/REST\n(Port 80)
+Mobile -down-> Server : HTTP/REST\n(Port 80)
+
+Controllers -down-> Services : Method calls
+Services -down-> Repositories : Method calls
+Services -down-> Utils : Method calls
+Repositories -down-> Model : ORM mapping
+Repositories -down-> Hibernate : JPA operations
+
+Hibernate -down-> H2DB : JDBC\njdbc:h2:mem:card_authorizer
+
+note right of Server
+  Runtime Environment:
+  - Java 17+
+  - Spring Boot 3.x
+  - Maven dependencies
+  - Lombok processor
+end note
+
+note right of H2DB
+  Database Configuration:
+  - Type: In-Memory
+  - Driver: org.h2.Driver
+  - Username: sa
+  - Password: password
+  - DDL: Auto-update
+end note
+
+note left of Postman
+  API Testing Tools
+  Send HTTP requests:
+  - GET /api/v1/card/{number}
+  - POST /api/v1/operation
+end note
+
+@enduml

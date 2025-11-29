@@ -1,0 +1,53 @@
+@startuml Card_Authorizer_GetCard_Sequence
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipant underline
+
+title Card Authorizer - Get Card by Number Sequence
+
+actor Client
+participant "CardController" as Controller
+participant "CardService" as Service
+participant "CardRepository" as CardRepo
+database "H2 Database" as DB
+
+Client -> Controller: GET /api/v1/card/{number}
+activate Controller
+
+Controller -> Service: getCard(number)
+activate Service
+
+Service -> CardRepo: findCardByNumber(number)
+activate CardRepo
+
+CardRepo -> DB: SELECT card\nJOIN client\nJOIN brand\nLEFT JOIN history
+activate DB
+
+alt Card found
+    DB --> CardRepo: Card with relationships
+    deactivate DB
+    CardRepo --> Service: Card entity
+    deactivate CardRepo
+
+    Service --> Controller: Card
+    deactivate Service
+
+    Controller --> Client: 200 OK\n{\n  "id": 1,\n  "number": "4532...",\n  "client": {...},\n  "brand": {...}\n}
+    deactivate Controller
+
+else Card not found
+    DB --> CardRepo: null
+    deactivate DB
+    CardRepo --> Service: null
+    deactivate CardRepo
+
+    Service --> Controller: throw Exception
+    deactivate Service
+
+    Controller --> Client: 404 Not Found\n"Card not found with number: ..."
+    deactivate Controller
+end
+
+@enduml

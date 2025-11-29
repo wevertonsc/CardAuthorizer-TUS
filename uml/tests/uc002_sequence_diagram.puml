@@ -1,0 +1,122 @@
+@startuml UC002_Get_NonExistent_Card_Sequence
+!define ERROR_COLOR #FFCDD2
+!define QUERY_COLOR #E1F5FE
+
+title UC-002: Retrieve Non-Existent Card - Sequence Diagram
+
+actor "Client System" as Client
+participant "CardController" as Controller
+participant "CardService" as Service
+participant "CardRepository" as CardRepo
+database "H2 Database" as DB
+
+== Query for Non-Existent Card ==
+
+Client -> Controller: GET /api/v1/card/9999999999999999
+activate Controller
+note right of Client
+  Attempting to retrieve
+  card that does not exist
+  in the database
+end note
+
+Controller -> Service: getCard("9999999999999999")
+activate Service
+
+Service -> CardRepo: findCardByNumber("9999999999999999")
+activate CardRepo
+
+CardRepo -> DB: SELECT * FROM card\nWHERE number = '9999999999999999'
+activate DB
+
+note right of DB
+  Query executes successfully
+  but returns no results
+  (empty result set)
+end note
+
+DB --> CardRepo: null (No rows found)
+deactivate DB
+
+CardRepo --> Service: null
+deactivate CardRepo
+
+== Handling Null Response ==
+
+Service -> Service: Check if card is null
+note right of Service
+  Card object is null
+  Could return:
+  1. null (current)
+  2. Error response (recommended)
+  3. Empty object
+end note
+
+Service --> Controller: null
+deactivate Service
+
+== Current Implementation ==
+
+Controller --> Client: HTTP 200 OK\nBody: null
+deactivate Controller
+
+hnote over Client ERROR_COLOR
+  CURRENT BEHAVIOR:
+  - Status: 200 OK
+  - Body: null
+
+  Client must handle null response
+  and determine card doesn't exist
+end hnote
+
+== Recommended RESTful Implementation ==
+
+hnote over Controller QUERY_COLOR
+  RECOMMENDED IMPROVEMENT:
+
+  if (card == null) {
+    return ResponseEntity
+      .status(HttpStatus.NOT_FOUND)
+      .body(new ErrorResponse(
+        "CARD_NOT_FOUND",
+        "Card with number ... does not exist"
+      ));
+  }
+
+  This would return:
+  - Status: 404 Not Found
+  - Body: Error message object
+end hnote
+
+== Alternative Response (Recommended) ==
+
+note right of Client
+  BETTER RESPONSE:
+  
+  HTTP 404 NOT FOUND
+  {
+    "error": "CARD_NOT_FOUND",
+    "message": "Card with number 
+               9999999999999999 
+               does not exist",
+    "timestamp": "2025-11-29T22:00:00Z"
+  }
+end note
+
+== Security Considerations ==
+
+note over DB
+  SECURITY NOTES:
+  
+  ✓ Database query is safe (no injection)
+  ✓ Card number format should be validated
+  ✓ Failed queries should be logged
+  ✓ Rate limiting prevents brute force
+  
+  Pattern detection:
+  - Multiple failed queries from same IP
+  - Sequential card number attempts
+  - Unusual query patterns
+end note
+
+@enduml

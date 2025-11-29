@@ -1,0 +1,171 @@
+@startuml Transaction_State_Diagram
+!define SUCCESS_COLOR #C8E6C9
+!define ERROR_COLOR #FFCDD2
+!define PROCESS_COLOR #E1F5FE
+
+title Card Authorizer - Transaction State Diagram
+
+[*] --> Submitted : Transaction Request\nReceived
+
+state Submitted {
+  [*] --> ValidatingFormat
+  ValidatingFormat --> FormatValid : JSON valid
+  ValidatingFormat --> [*] : Invalid format
+}
+
+Submitted --> LuhnValidation : Format OK
+Submitted --> RejectedBadRequest : Format Invalid
+
+state LuhnValidation {
+  [*] --> ApplyingAlgorithm
+  ApplyingAlgorithm --> ChecksumValid : Checksum OK
+  ApplyingAlgorithm --> ChecksumInvalid : Checksum Failed
+}
+
+LuhnValidation --> CardLookup : UC-001, UC-003\nValid Card Number
+LuhnValidation --> RejectedInvalidCard : UC-004\nInvalid Card Number
+
+state CardLookup {
+  [*] --> QueryingDatabase
+  QueryingDatabase --> CardFound : Card exists
+  QueryingDatabase --> CardNotFound : Card missing
+}
+
+CardLookup --> SecurityValidation : UC-003, UC-005, UC-006\nCard Found
+CardLookup --> RejectedNotFound : UC-002\nCard Not Found
+
+state SecurityValidation {
+  [*] --> ValidatingName
+  ValidatingName --> NameValid : Match
+  ValidatingName --> NameInvalid : Mismatch
+  
+  NameValid --> ValidatingCVV
+  ValidatingCVV --> CVVValid : Match
+  ValidatingCVV --> CVVInvalid : Mismatch
+  
+  CVVValid --> ValidatingExpiration
+  ValidatingExpiration --> ExpirationValid : Not expired
+  ValidatingExpiration --> ExpirationInvalid : Expired
+  
+  ExpirationValid --> ValidatingEmail
+  ValidatingEmail --> EmailValid : Valid format
+  ValidatingEmail --> EmailInvalid : Invalid format
+}
+
+SecurityValidation --> BalanceCheck : UC-003, UC-006\nSecurity OK
+SecurityValidation --> RejectedInvalidCVV : UC-005\nCVV Mismatch
+SecurityValidation --> RejectedInvalidName : Name Mismatch
+SecurityValidation --> RejectedExpired : Card Expired
+SecurityValidation --> RejectedInvalidEmail : Email Invalid
+
+state BalanceCheck {
+  [*] --> CalculatingAvailable
+  CalculatingAvailable --> SufficientFunds : Balance >= Amount
+  CalculatingAvailable --> InsufficientFunds : Balance < Amount
+}
+
+BalanceCheck --> Processing : UC-003\nSufficient Balance
+BalanceCheck --> RejectedInsufficientBalance : UC-006\nInsufficient Balance
+
+state Processing {
+  [*] --> UpdatingBalance
+  UpdatingBalance --> RecordingHistory
+  RecordingHistory --> CommittingTransaction
+  CommittingTransaction --> TransactionComplete
+}
+
+Processing --> Approved : UC-003\nTransaction Success
+
+state Approved #SUCCESS_COLOR {
+  [*] --> GeneratingResponse
+  GeneratingResponse --> ResponseSent
+}
+
+state RejectedBadRequest #ERROR_COLOR {
+  [*] --> LoggingError
+  LoggingError --> SendingErrorResponse
+}
+
+state RejectedInvalidCard #ERROR_COLOR {
+  [*] --> LoggingSecurityEvent
+  LoggingSecurityEvent --> SendingErrorResponse
+}
+
+state RejectedNotFound #ERROR_COLOR {
+  [*] --> LoggingAttempt
+  LoggingAttempt --> SendingErrorResponse
+}
+
+state RejectedInvalidCVV #ERROR_COLOR {
+  [*] --> LoggingSecurityEvent
+  LoggingSecurityEvent --> IncrementingFailureCounter
+  IncrementingFailureCounter --> CheckingFraudPattern
+  CheckingFraudPattern --> SendingErrorResponse
+}
+
+state RejectedInvalidName #ERROR_COLOR {
+  [*] --> LoggingSecurityEvent
+  LoggingSecurityEvent --> SendingErrorResponse
+}
+
+state RejectedExpired #ERROR_COLOR {
+  [*] --> LoggingAttempt
+  LoggingAttempt --> SendingErrorResponse
+}
+
+state RejectedInvalidEmail #ERROR_COLOR {
+  [*] --> LoggingAttempt
+  LoggingAttempt --> SendingErrorResponse
+}
+
+state RejectedInsufficientBalance #ERROR_COLOR {
+  [*] --> LoggingAuditEvent
+  LoggingAuditEvent --> AnalyzingPattern
+  AnalyzingPattern --> SendingErrorResponse
+}
+
+Approved --> [*] : Return Success
+RejectedBadRequest --> [*] : Return Error
+RejectedInvalidCard --> [*] : Return Error
+RejectedNotFound --> [*] : Return Error
+RejectedInvalidCVV --> [*] : Return Error
+RejectedInvalidName --> [*] : Return Error
+RejectedExpired --> [*] : Return Error
+RejectedInvalidEmail --> [*] : Return Error
+RejectedInsufficientBalance --> [*] : Return Error
+
+note right of LuhnValidation
+  Early validation prevents
+  unnecessary database queries
+  
+  Performance optimization:
+  - Luhn check: <10ms
+  - Database query: 50-100ms
+end note
+
+note right of SecurityValidation
+  Multi-layer security:
+  1. Name verification
+  2. CVV validation
+  3. Expiration check
+  4. Email validation
+  
+  All must pass for approval
+end note
+
+note right of BalanceCheck
+  Financial control ensures:
+  - No overdraft
+  - Real-time availability
+  - Credit limit enforcement
+end note
+
+note right of Processing
+  ACID transaction:
+  - Atomic: All or nothing
+  - Consistent: Valid state
+  - Isolated: No interference
+  - Durable: Persisted
+end note
+
+@enduml

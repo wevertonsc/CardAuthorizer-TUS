@@ -1,0 +1,75 @@
+@startuml Card_Authorizer_UseCase_Diagram
+!theme plain
+
+skinparam backgroundColor #FFFFFF
+skinparam actorStyle awesome
+
+title Card Authorizer - Use Case Diagram
+
+left to right direction
+
+actor "API Client" as Client
+actor "Cardholder" as Cardholder
+actor "System Administrator" as Admin
+
+rectangle "Card Authorizer System" {
+
+    usecase "Get Card Information" as UC1
+    usecase "Process Transaction" as UC2
+    usecase "Validate Card Number\n(Luhn Algorithm)" as UC3
+    usecase "Validate Cardholder Data" as UC4
+    usecase "Check Balance" as UC5
+    usecase "Update Card Balance" as UC6
+    usecase "Create Transaction History" as UC7
+    usecase "Identify Card Brand" as UC8
+    usecase "Return Operation Result" as UC9
+
+    ' Main use cases
+    Client --> UC1
+    Client --> UC2
+
+    ' Process Transaction includes
+    UC2 ..> UC3 : <<include>>
+    UC2 ..> UC4 : <<include>>
+    UC2 ..> UC5 : <<include>>
+    UC2 ..> UC8 : <<include>>
+
+    ' Process Transaction extends
+    UC2 ..> UC6 : <<extend>>\n[balance sufficient]
+    UC2 ..> UC7 : <<extend>>\n[transaction successful]
+
+    UC2 ..> UC9 : <<include>>
+    UC1 ..> UC9 : <<include>>
+}
+
+note right of UC3
+  Validates credit card number
+  using Luhn algorithm to ensure
+  the card number is mathematically
+  valid before processing
+end note
+
+note right of UC4
+  Validates:
+  - Cardholder name
+  - Email address
+  - Expiration date
+  - CVV code
+end note
+
+note right of UC5
+  Checks if available balance
+  is sufficient for the
+  requested transaction amount
+end note
+
+note bottom of UC7
+  Creates audit trail record
+  with transaction details:
+  - Date/time
+  - Amount
+  - Operation type
+  - Result message
+end note
+
+@enduml

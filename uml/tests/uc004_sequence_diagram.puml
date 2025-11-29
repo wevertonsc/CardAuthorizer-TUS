@@ -1,0 +1,108 @@
+@startuml UC004_Reject_Invalid_Card_Sequence
+!define ERROR_COLOR #FFCDD2
+!define VALIDATION_COLOR #FFF9C4
+
+title UC-004: Reject Purchase with Invalid Card - Sequence Diagram
+
+actor "Merchant System" as Merchant
+participant "OperationController" as Controller
+participant "OperationService" as Service
+participant "JavaLuhnAlgorithm" as Luhn
+participant "SecurityLogger" as Logger
+database "H2 Database" as DB
+
+== Transaction Submission ==
+
+Merchant -> Controller: POST /api/v1/operation
+activate Controller
+note right of Merchant
+  {
+    "name": "Plato of Athens",
+    "number": "1234567890123456",
+    "cvv": "123",
+    "value": 100.00
+  }
+end note
+
+Controller -> Service: executeOperation(operationData)
+activate Service
+
+== Luhn Algorithm Validation ==
+
+Service -> Luhn: validateCreditCardNumber("1234567890123456")
+activate Luhn
+
+Luhn -> Luhn: Reverse digits
+note right
+  Original: 1234567890123456
+  Reversed: 6543210987654321
+end note
+
+Luhn -> Luhn: Double every 2nd digit
+note right
+  Positions: 6 10 4 6 2 2 0 18 8 14 6 10 4 6 2 2
+end note
+
+Luhn -> Luhn: Sum digits > 9
+note right
+  Result: 6 1 4 6 2 2 0 9 8 5 6 1 4 6 2 2
+end note
+
+Luhn -> Luhn: Calculate checksum
+note right
+  Sum: 64
+  64 % 10 = 4 ≠ 0
+  INVALID!
+end note
+
+Luhn --> Service: false (INVALID)
+deactivate Luhn
+
+== Security Logging ==
+
+Service -> Logger: logInvalidCardAttempt(\n  cardNumber: "1234...3456",\n  timestamp: now(),\n  source: "merchant"\n)
+activate Logger
+
+Logger -> DB: INSERT INTO security_log\n(event_type, card_masked, timestamp)
+activate DB
+DB --> Logger: Log ID
+deactivate DB
+
+Logger --> Service: Logged
+deactivate Logger
+
+== Error Response ==
+
+Service -> Service: Create Error Response
+note right
+  {
+    "id": 1,
+    "message": "INVALID_CARD",
+    "description": "Invalid card number!"
+  }
+end note
+
+Service --> Controller: Messages(INVALID_CARD)
+deactivate Service
+
+Controller --> Merchant: HTTP 200 OK\n(Should be 400 Bad Request)
+deactivate Controller
+
+hnote over Merchant ERROR_COLOR
+  Transaction REJECTED
+  No database lookup performed
+  Security event logged
+  Processing time: <100ms
+end hnote
+
+== Prevention Benefits ==
+
+note right of DB
+  Database NOT queried
+  - Saves resources
+  - Prevents timing attacks
+  - Early rejection pattern
+  - Fraud detection enabled
+end note
+
+@enduml

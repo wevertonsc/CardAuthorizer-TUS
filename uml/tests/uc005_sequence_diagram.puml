@@ -1,0 +1,141 @@
+@startuml UC005_Reject_Incorrect_CVV_Sequence
+!define ERROR_COLOR #FFCDD2
+!define SECURITY_COLOR #FFE0B2
+
+title UC-005: Reject Purchase with Incorrect CVV - Sequence Diagram
+
+actor "Merchant System" as Merchant
+participant "OperationController" as Controller
+participant "OperationService" as Service
+participant "JavaLuhnAlgorithm" as Luhn
+participant "CardRepository" as CardRepo
+participant "SecurityLogger" as Logger
+participant "FraudDetection" as Fraud
+database "H2 Database" as DB
+
+== Transaction Submission ==
+
+Merchant -> Controller: POST /api/v1/operation
+activate Controller
+note right of Merchant
+  {
+    "name": "Plato of Athens",
+    "number": "4532015112830366",
+    "cvv": "999",  ← INCORRECT
+    "value": 100.00
+  }
+end note
+
+Controller -> Service: executeOperation(operationData)
+activate Service
+
+== Step 1: Luhn Validation ==
+
+Service -> Luhn: validateCreditCardNumber("4532015112830366")
+activate Luhn
+Luhn --> Service: true (VALID)
+deactivate Luhn
+
+== Step 2: Retrieve Card ==
+
+Service -> CardRepo: findCardByNumber("4532015112830366")
+activate CardRepo
+
+CardRepo -> DB: SELECT * FROM card\nWHERE number = '4532015112830366'
+activate DB
+DB --> CardRepo: Card Entity
+deactivate DB
+
+CardRepo --> Service: Card Object\n(Stored CVV: "123")
+deactivate CardRepo
+
+== Step 3: Name Validation ==
+
+Service -> Service: validateName(\n  provided: "Plato of Athens",\n  stored: "Plato of Athens"\n)
+note right: MATCH ✓
+
+== Step 4: CVV Validation ==
+
+Service -> Service: validateCVV(\n  provided: "999",\n  stored: "123"\n)
+
+alt CVV Mismatch
+  Service -> Service: CVV Validation FAILED
+  hnote right ERROR_COLOR
+    Provided: "999"
+    Expected: "123"
+    Result: MISMATCH
+  end hnote
+
+  == Security Event Logging ==
+
+  Service -> Logger: logFailedCVVAttempt(\n  cardId: 1,\n  timestamp: now(),\n  attemptNumber: 1\n)
+  activate Logger
+
+  Logger -> DB: INSERT INTO security_log\n(event_type, card_id, timestamp)
+  activate DB
+  DB --> Logger: Log created
+  deactivate DB
+
+  Logger -> Logger: Increment CVV\nfailure counter
+
+  Logger --> Service: Logged (attempt #1)
+  deactivate Logger
+
+  == Fraud Detection Check ==
+
+  Service -> Fraud: checkCVVFailurePattern(cardId: 1)
+  activate Fraud
+
+  Fraud -> DB: SELECT COUNT(*)\nFROM security_log\nWHERE card_id = 1\nAND event_type = 'CVV_FAILURE'\nAND timestamp > NOW() - INTERVAL 5 MINUTES
+  activate DB
+  DB --> Fraud: count = 1
+  deactivate DB
+
+  alt Failure count < 3
+    Fraud --> Service: No alert (count: 1)
+  else Failure count >= 3
+    Fraud -> Fraud: Trigger fraud alert
+    hnote right SECURITY_COLOR
+      Multiple CVV failures detected
+      Possible fraud attempt
+      Alert sent to monitoring
+    end hnote
+    Fraud --> Service: FRAUD_ALERT triggered
+  end
+  deactivate Fraud
+
+  == Error Response ==
+
+  Service -> Service: Create Error Response
+  note right
+    {
+      "id": 5,
+      "message": "INVALID_CVV",
+      "description": "CVV code is invalid!"
+    }
+  end note
+
+  Service --> Controller: Messages(INVALID_CVV)
+  deactivate Service
+
+  Controller --> Merchant: HTTP 200 OK\n(Should be 401 Unauthorized)
+  deactivate Controller
+
+end
+
+hnote over Merchant ERROR_COLOR
+  Transaction REJECTED
+  Reason: CVV mismatch
+  Security event logged
+  Balance unchanged: $3,000.00
+  Fraud detection active
+end hnote
+
+note over DB
+  CVV never stored in logs
+  Only masked card info logged
+  Attempt counter incremented
+  Fraud patterns monitored
+end note
+
+@enduml

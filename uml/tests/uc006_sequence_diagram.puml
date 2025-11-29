@@ -1,0 +1,182 @@
+@startuml UC006_Reject_Insufficient_Balance_Sequence
+!define ERROR_COLOR #FFCDD2
+!define FINANCIAL_COLOR #E1BEE7
+
+title UC-006: Reject Purchase with Insufficient Balance - Sequence Diagram
+
+actor "Merchant System" as Merchant
+participant "OperationController" as Controller
+participant "OperationService" as Service
+participant "JavaLuhnAlgorithm" as Luhn
+participant "CardRepository" as CardRepo
+participant "AuditLogger" as Logger
+database "H2 Database" as DB
+
+== Transaction Submission ==
+
+Merchant -> Controller: POST /api/v1/operation
+activate Controller
+note right of Merchant
+  {
+    "name": "Plato of Athens",
+    "number": "4532015112830366",
+    "cvv": "123",
+    "value": 99999.00  ← EXCEEDS BALANCE
+  }
+end note
+
+Controller -> Service: executeOperation(operationData)
+activate Service
+
+== Step 1: Luhn Validation ==
+
+Service -> Luhn: validateCreditCardNumber("4532015112830366")
+activate Luhn
+Luhn --> Service: true (VALID)
+deactivate Luhn
+
+== Step 2: Retrieve Card ==
+
+Service -> CardRepo: findCardByNumber("4532015112830366")
+activate CardRepo
+
+CardRepo -> DB: SELECT * FROM card\nWHERE number = '4532015112830366'
+activate DB
+DB --> CardRepo: Card Entity
+deactivate DB
+
+CardRepo --> Service: Card Object
+deactivate CardRepo
+
+note right of Service
+  Card Details:
+  - Balance: $3,000.00
+  - Limit: $5,000.00
+  - Client: Plato of Athens
+  - CVV: 123
+end note
+
+== Step 3: Name Validation ==
+
+Service -> Service: validateName()
+note right: MATCH ✓
+
+== Step 4: CVV Validation ==
+
+Service -> Service: validateCVV()
+note right: MATCH ✓
+
+== Step 5: Expiration Validation ==
+
+Service -> Service: validateExpiration("12/25")
+note right: VALID ✓
+
+== Step 6: Email Validation ==
+
+Service -> Service: validateEmail(\n"plato.of.athens@macunaima.com")
+note right: VALID ✓
+
+== Step 7: Balance Check ==
+
+Service -> Service: checkBalance(\n  available: 3000.00,\n  required: 99999.00\n)
+
+note right of Service FINANCIAL_COLOR
+  BALANCE CALCULATION:
+
+  Credit Limit:    $5,000.00
+  Current Owed:    $2,000.00
+  Available:       $3,000.00
+
+  Purchase Amount: $99,999.00
+
+  Check: $3,000.00 >= $99,999.00
+  Result: FALSE ✗
+
+  Shortage: $96,999.00
+end note
+
+alt Balance Insufficient
+  Service -> Service: Balance Check FAILED
+
+  == Audit Logging ==
+
+  Service -> Logger: logInsufficientBalanceAttempt(\n  cardId: 1,\n  attempted: 99999.00,\n  available: 3000.00,\n  shortage: 96999.00\n)
+  activate Logger
+
+  Logger -> DB: INSERT INTO audit_log\n(event_type, card_id,\nattempted_amount, available_amount,\ntimestamp)
+  activate DB
+  DB --> Logger: Logged
+  deactivate DB
+
+  Logger --> Service: Audit record created
+  deactivate Logger
+
+  == Financial Control Analysis ==
+
+  Service -> Service: Analyze transaction pattern
+  note right
+    Large amount attempted: $99,999.00
+    Normal transaction: $100-$500
+    Ratio: 199x higher than typical
+
+    Possible scenarios:
+    - Data entry error
+    - Fraudulent attempt
+    - Legitimate large purchase
+  end note
+
+  == Error Response ==
+
+  Service -> Service: Create Error Response
+  note right
+    {
+      "id": 4,
+      "message": "INSUFFICIENT_BALANCE",
+      "description": "Transaction value exceeds available balance!"
+    }
+  end note
+
+  Service --> Controller: Messages(INSUFFICIENT_BALANCE)
+  deactivate Service
+
+  Controller --> Merchant: HTTP 200 OK\n(Should be 402 Payment Required)
+  deactivate Controller
+
+end
+
+hnote over Merchant ERROR_COLOR
+  Transaction REJECTED
+  Reason: Insufficient funds
+
+  Available: $3,000.00
+  Requested: $99,999.00
+  Shortage:  $96,999.00
+
+  Balance unchanged
+  No history record created
+end hnote
+
+hnote over DB FINANCIAL_COLOR
+  Financial Controls Active:
+  ✓ No overdraft permitted
+  ✓ Real-time balance check
+  ✓ Transaction not processed
+  ✓ Audit trail maintained
+
+  Alternative suggestions:
+  - Credit limit increase
+  - Split into smaller transactions
+  - Use different payment method
+end hnote
+
+== Potential Next Steps ==
+
+note right of Merchant
+  Merchant may:
+  1. Retry with lower amount
+  2. Request credit limit increase
+  3. Use alternative payment
+  4. Contact customer to verify
+end note
+
+@enduml
