@@ -112,12 +112,12 @@ The application follows a layered architecture pattern:
 - **JavaLuhnAlgorithm**: Credit card number validation
 - **CreditCardBrand**: Brand identification logic
 
-![ClassDiagram.png](\uml%2Fimages%2FClassDiagram.png)
+![ClassDiagram.png](/uml%2Fimages%2FClassDiagram.png)
 
 ---
 
 ## Getting Started
-![DeploymentDiagram.png](\uml%2Fimages%2FDeploymentDiagram.png)
+![DeploymentDiagram.png](/uml%2Fimages%2FDeploymentDiagram.png)
 ### Prerequisites
 
 - Java Development Kit (JDK) 17 or higher
@@ -398,13 +398,13 @@ The collection includes:
 ![UC_003_Activity_Diagram.png](\uml%2Ftests%2Fimages%2FUC_003_Activity_Diagram.png)
 
 ### USE CASE 04
-![UC_004_Sequence_Diagram.png](\uml%2Ftests%2Fimages%2FUC_004_Sequence_Diagram.png)
+![UC_004_Sequence_Diagram.png](/uml%2Ftests%2Fimages%2FUC_004_Sequence_Diagram.png)
 
 ### USE CASE 05
-![UC_005_Sequence_Diagram.png](\uml%2Ftests%2Fimages%2FUC_005_Sequence_Diagram.png)
+![UC_005_Sequence_Diagram.png](/uml%2Ftests%2Fimages%2FUC_005_Sequence_Diagram.png)
 
 ### USE CASE 06
-![UC_006_Sequence_Diagram.png](\uml%2Ftests%2Fimages%2FUC_006_Sequence_Diagram.png)
+![UC_006_Sequence_Diagram.png](/uml%2Ftests%2Fimages%2FUC_006_Sequence_Diagram.png)
 ---
 
 ## Database Schema
@@ -686,4 +686,5 @@ For questions or support, please contact:
 ---
 
 **Version**: 1.0.0  
+
 **Last Updated**: November 2025
