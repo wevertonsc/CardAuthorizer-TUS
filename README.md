@@ -498,6 +498,25 @@ card_authorizer/
 │           └── util/
 │               ├── CreditCardBrandTest.java
 │               └── JavaLuhnAlgorithmTest.java
+├── uml
+│   ├── images
+│   ├── tests
+│   │   ├── images
+│   │   ├── uc001
+│   │   ├── uc002
+│   │   ├── uc003
+│   │   ├── uc004
+│   │   ├── uc005
+│   │   └── uc005
+│   ├── architecture.puml
+│   ├── class.puml
+│   ├── deployment.puml
+│   ├── er_diagram.puml
+│   ├── sequence.puml
+│   ├── sequence_transaction.puml
+│   ├── state.puml
+│   └── use_case.puml 
+├── Card_Authorizer_Postman_Collection.json
 ├── Card_Authorizer_Postman_Collection.json
 ├── pom.xml
 └── README.md

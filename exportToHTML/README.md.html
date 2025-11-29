@@ -1,0 +1,715 @@
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #cc7832;}
+.s2 { color: #a9b7c6;}
+.s3 { color: #9876aa; font-style: italic;}
+.s4 { color: #6a8759;}
+.s5 { color: #287bde;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+README.md</font>
+</center></td></tr></table>
+<pre>
+<span class="s1"># </span><span class="s2">TUS - Technological University of the Shannon</span>
+<span class="s1">## </span><span class="s2">Athlone Campus</span>
+
+<span class="s1">---</span>
+<span class="s0">***</span><span class="s2">Student</span><span class="s0">***: </span><span class="s2">Weverton de Souza Castanho  </span>
+<span class="s0">***</span><span class="s2">Email</span><span class="s0">***: </span><span class="s2">wevertonsc@gmail.com  </span>
+<span class="s0">***</span><span class="s2">Course</span><span class="s0">***: </span><span class="s2">Object-Oriented Programming I </span><span class="s0">(</span><span class="s2">AL_KCNCM_9_1</span><span class="s0">) </span><span class="s2">29468  </span>
+<span class="s0">***</span><span class="s2">Date</span><span class="s0">***: </span><span class="s2">November 2025</span>
+<span class="s1">---</span>
+<span class="s1"># </span><span class="s2">Card Authorizer Application</span>
+
+<span class="s2">Credit card transaction authorization system built with Spring Boot, implementing Luhn algorithm validation, brand identification, and balance management.</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Table of Contents</span>
+
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Overview</span><span class="s0">](</span><span class="s2">#overview</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Features</span><span class="s0">](</span><span class="s2">#features</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Technology Stack</span><span class="s0">](</span><span class="s2">#technology-stack</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Architecture</span><span class="s0">](</span><span class="s2">#architecture</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Getting Started</span><span class="s0">](</span><span class="s2">#getting-started</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">API Documentation</span><span class="s0">](</span><span class="s2">#api-documentation</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Testing</span><span class="s0">](</span><span class="s2">#testing</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Database Schema</span><span class="s0">](</span><span class="s2">#database-schema</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Project Structure</span><span class="s0">](</span><span class="s2">#project-structure</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">Development</span><span class="s0">](</span><span class="s2">#development</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">[</span><span class="s2">License</span><span class="s0">](</span><span class="s2">#license</span><span class="s0">)</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Overview</span>
+
+<span class="s2">The Card Authorizer is an enterprise-grade Spring Boot application designed to process and authorize credit card transactions. The system validates card numbers using the Luhn algorithm, identifies card brands </span><span class="s0">(</span><span class="s2">Visa, Mastercard, etc.</span><span class="s0">)</span><span class="s2">, and manages transaction authorization based on available balance and card validation rules.</span>
+
+<span class="s2">This application was developed as part of the Object-Oriented Programming I course at Technology University Shannon - Athlone </span><span class="s0">(</span><span class="s2">TUS</span><span class="s0">)</span><span class="s2">.</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Features</span>
+
+<span class="s1">### </span><span class="s2">Core Functionality</span>
+
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Card Validation</span><span class="s0">**: </span><span class="s2">Luhn algorithm implementation for credit card number validation</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Brand Identification</span><span class="s0">**: </span><span class="s2">Automatic detection of card brands </span><span class="s0">(</span><span class="s2">Visa, Mastercard, American Express, Discover</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Transaction Authorization</span><span class="s0">**: </span><span class="s2">Real-time authorization based on card validation and balance availability</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Balance Management</span><span class="s0">**: </span><span class="s2">Automatic balance updates after successful transactions</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Transaction History</span><span class="s0">**: </span><span class="s2">Complete audit trail of all operations</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Cardholder Verification</span><span class="s0">**: </span><span class="s2">Validates cardholder name, email, expiration date, and CVV</span>
+
+<span class="s1">### </span><span class="s2">Technical Features</span>
+
+<span class="s1">- </span><span class="s2">RESTful API architecture</span>
+<span class="s1">- </span><span class="s2">H2 in-memory database for development</span>
+<span class="s1">- </span><span class="s2">JPA/Hibernate for data persistence</span>
+<span class="s1">- </span><span class="s2">Comprehensive unit and integration testing </span><span class="s0">(</span><span class="s2">127 tests</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s2">Spring Boot auto-configuration</span>
+<span class="s1">- </span><span class="s2">Lombok for reduced boilerplate code</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Technology Stack</span>
+
+<span class="s1">### </span><span class="s2">Backend</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Java</span><span class="s0">**: </span><span class="s2">17+</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Spring Boot</span><span class="s0">**: </span><span class="s2">3.x</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Spring Data JPA</span><span class="s0">**: </span><span class="s2">Database abstraction layer</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Spring Web</span><span class="s0">**: </span><span class="s2">REST API implementation</span>
+
+<span class="s1">### </span><span class="s2">Database</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">H2 Database</span><span class="s0">**: </span><span class="s2">In-memory database for development</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Hibernate</span><span class="s0">**: </span><span class="s2">ORM framework</span>
+
+<span class="s1">### </span><span class="s2">Build &amp; Dependencies</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Maven</span><span class="s0">**: </span><span class="s2">Dependency management and build automation</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Lombok</span><span class="s0">**: </span><span class="s2">Code generation for DTOs and entities</span>
+
+<span class="s1">### </span><span class="s2">Testing</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">JUnit 5</span><span class="s0">**: </span><span class="s2">Unit testing framework</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Mockito</span><span class="s0">**: </span><span class="s2">Mocking framework</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Spring Test</span><span class="s0">**: </span><span class="s2">Integration testing support</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">MockMvc</span><span class="s0">**: </span><span class="s2">REST API testing</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Architecture</span>
+
+<span class="s1">### </span><span class="s2">Design Pattern</span>
+<span class="s2">The application follows a layered architecture pattern</span><span class="s0">:</span>
+
+<span class="s0">![</span><span class="s2">SystemArchitecture.png</span><span class="s0">](</span><span class="s2">/uml%2Fimages%2FSystemArchitecture.png</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">Core Components</span>
+
+<span class="s1">#### </span><span class="s2">Models</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Card</span><span class="s0">**: </span><span class="s2">Credit card entity with number, expiration, CVV, limits, balance</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Client</span><span class="s0">**: </span><span class="s2">Cardholder information</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Brand</span><span class="s0">**: </span><span class="s2">Card brand details </span><span class="s0">(</span><span class="s2">Visa, Mastercard, etc.</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">History</span><span class="s0">**: </span><span class="s2">Transaction audit trail</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Messages</span><span class="s0">**: </span><span class="s2">Operation result messages</span>
+
+<span class="s1">#### </span><span class="s2">Services</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">CardService</span><span class="s0">**: </span><span class="s2">Card retrieval and management</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">OperationService</span><span class="s0">**: </span><span class="s2">Transaction processing and validation</span>
+
+<span class="s1">#### </span><span class="s2">Controllers</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">CardController</span><span class="s0">**: </span><span class="s2">Card information endpoints</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">OperationController</span><span class="s0">**: </span><span class="s2">Transaction processing endpoints</span>
+
+<span class="s1">#### </span><span class="s2">Utilities</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">JavaLuhnAlgorithm</span><span class="s0">**: </span><span class="s2">Credit card number validation</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">CreditCardBrand</span><span class="s0">**: </span><span class="s2">Brand identification logic</span>
+
+<span class="s0">![</span><span class="s2">ClassDiagram.png</span><span class="s0">](</span><span class="s2">/uml%2Fimages%2FClassDiagram.png</span><span class="s0">)</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Getting Started</span>
+<span class="s0">![</span><span class="s2">DeploymentDiagram.png</span><span class="s0">](</span><span class="s2">/uml%2Fimages%2FDeploymentDiagram.png</span><span class="s0">)</span>
+<span class="s1">### </span><span class="s2">Prerequisites</span>
+
+<span class="s1">- </span><span class="s2">Java Development Kit </span><span class="s0">(</span><span class="s2">JDK</span><span class="s0">) </span><span class="s2">17 or higher</span>
+<span class="s1">- </span><span class="s2">Maven 3.6 or higher</span>
+<span class="s1">- </span><span class="s2">IDE </span><span class="s0">(</span><span class="s2">IntelliJ IDEA, Eclipse, or VS Code recommended</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s2">Postman </span><span class="s0">(</span><span class="s2">for API testing</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">Installation</span>
+
+<span class="s1">1. </span><span class="s2">Clone the repository</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">git clone &lt;repository-url&gt;</span>
+<span class="s4">cd card_authorizer</span>
+<span class="s1">```</span>
+
+<span class="s1">2. </span><span class="s2">Build the project</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">mvn clean install</span>
+<span class="s1">```</span>
+
+<span class="s1">3. </span><span class="s2">Run the application</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">mvn spring-boot:run</span>
+<span class="s1">```</span>
+
+<span class="s2">The application will start on port 80 by default.</span>
+
+<span class="s1">### </span><span class="s2">Configuration</span>
+
+<span class="s2">The application uses the following default configuration in `application.properties`</span><span class="s0">:</span>
+
+<span class="s1">```</span><span class="s3">properties</span>
+<span class="s4">spring.application.name=card_authorizer</span>
+
+<span class="s4"># H2 Database Configuration</span>
+<span class="s4">spring.datasource.url=jdbc:h2:mem:card_authorizer</span>
+<span class="s4">spring.datasource.driverClassName=org.h2.Driver</span>
+<span class="s4">spring.datasource.username=sa</span>
+<span class="s4">spring.datasource.password=password</span>
+<span class="s4">spring.jpa.database-platform=org.hibernate.dialect.H2Dialect</span>
+<span class="s4">spring.jpa.hibernate.ddl-auto=create-drop</span>
+<span class="s4">spring.jpa.defer-datasource-initialization=true</span>
+<span class="s4">logging.level.org.hibernate.SQL= DEBUG</span>
+
+<span class="s4"># Server Port Configuration</span>
+<span class="s4">server.port=8088</span>
+<span class="s1">```</span>
+
+<span class="s2">To change the server port, modify `server.port` in `application.properties`.</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">API Documentation</span>
+
+<span class="s1">### </span><span class="s2">Base URL</span>
+<span class="s1">```</span>
+<span class="s4">http://localhost:8088/api/v1</span>
+<span class="s1">```</span>
+
+<span class="s1">### </span><span class="s2">Endpoints</span>
+
+<span class="s1">#### </span><span class="s2">1. Get Card by Number</span>
+
+<span class="s2">Retrieves card information by card number.</span>
+
+<span class="s0">**</span><span class="s2">Endpoint</span><span class="s0">**: </span><span class="s2">`GET /card/{number}`</span>
+
+<span class="s0">**</span><span class="s2">Path Parameters</span><span class="s0">**:</span>
+<span class="s1">- </span><span class="s2">`number` </span><span class="s0">(</span><span class="s2">string, required</span><span class="s0">): </span><span class="s2">Credit card number</span>
+
+<span class="s0">**</span><span class="s2">Response</span><span class="s0">**: </span><span class="s2">Card object with client and brand relationships</span>
+
+<span class="s0">**</span><span class="s2">Example Request</span><span class="s0">**:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">GET http://localhost:80/api/v1/card/4532015112830366</span>
+<span class="s1">```</span>
+
+<span class="s0">**</span><span class="s2">Example Response</span><span class="s0">** (</span><span class="s2">200 OK</span><span class="s0">):</span>
+<span class="s1">```</span><span class="s3">json</span>
+<span class="s4">{</span>
+    <span class="s4">&quot;id&quot;: 1,</span>
+    <span class="s4">&quot;number&quot;: &quot;4532015112830366&quot;,</span>
+    <span class="s4">&quot;expiration&quot;: &quot;12/25&quot;,</span>
+    <span class="s4">&quot;cvv&quot;: &quot;123&quot;,</span>
+    <span class="s4">&quot;limits&quot;: 5000.0,</span>
+    <span class="s4">&quot;balance&quot;: 3000.0,</span>
+    <span class="s4">&quot;client&quot;: {</span>
+        <span class="s4">&quot;id&quot;: 1,</span>
+        <span class="s4">&quot;name&quot;: &quot;John Doe&quot;,</span>
+        <span class="s4">&quot;email&quot;: &quot;john.doe@example.com&quot;</span>
+    <span class="s4">},</span>
+    <span class="s4">&quot;brand&quot;: {</span>
+        <span class="s4">&quot;id&quot;: 1,</span>
+        <span class="s4">&quot;name&quot;: &quot;Visa&quot;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+<span class="s1">```</span>
+
+<span class="s0">**</span><span class="s2">Error Response</span><span class="s0">** (</span><span class="s2">404 Not Found</span><span class="s0">):</span>
+<span class="s1">```</span>
+<span class="s4">Card not found with number: 9999999999999999</span>
+<span class="s1">```</span>
+
+<span class="s1">---</span>
+
+<span class="s1">#### </span><span class="s2">2. Process Transaction</span>
+
+<span class="s2">Processes a credit card transaction </span><span class="s0">(</span><span class="s2">purchase, withdrawal, etc.</span><span class="s0">)</span><span class="s2">.</span>
+
+<span class="s0">**</span><span class="s2">Endpoint</span><span class="s0">**: </span><span class="s2">`POST /operation`</span>
+
+<span class="s0">**</span><span class="s2">Request Body</span><span class="s0">**: </span><span class="s2">OperationDAO object</span>
+
+<span class="s0">**</span><span class="s2">Fields</span><span class="s0">**:</span>
+<span class="s1">- </span><span class="s2">`name` </span><span class="s0">(</span><span class="s2">string, required</span><span class="s0">): </span><span class="s2">Cardholder name</span>
+<span class="s1">- </span><span class="s2">`number` </span><span class="s0">(</span><span class="s2">string, required</span><span class="s0">): </span><span class="s2">Credit card number</span>
+<span class="s1">- </span><span class="s2">`expiration` </span><span class="s0">(</span><span class="s2">string, required</span><span class="s0">): </span><span class="s2">Card expiration date </span><span class="s0">(</span><span class="s2">MM/YY</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s2">`cvv` </span><span class="s0">(</span><span class="s2">string, required</span><span class="s0">): </span><span class="s2">Card CVV code</span>
+<span class="s1">- </span><span class="s2">`email` </span><span class="s0">(</span><span class="s2">string, required</span><span class="s0">): </span><span class="s2">Cardholder email</span>
+<span class="s1">- </span><span class="s2">`brand` </span><span class="s0">(</span><span class="s2">string, required</span><span class="s0">): </span><span class="s2">Card brand</span>
+<span class="s1">- </span><span class="s2">`type` </span><span class="s0">(</span><span class="s2">string, required</span><span class="s0">): </span><span class="s2">Operation type </span><span class="s0">(</span><span class="s2">e.g., </span><span class="s0">&quot;</span><span class="s2">PURCHASE</span><span class="s0">&quot;)</span>
+<span class="s1">- </span><span class="s2">`value` </span><span class="s0">(</span><span class="s2">float, required</span><span class="s0">): </span><span class="s2">Transaction amount</span>
+
+<span class="s0">**</span><span class="s2">Response</span><span class="s0">**: </span><span class="s2">Messages object with operation result</span>
+
+<span class="s0">**</span><span class="s2">Example Request</span><span class="s0">**:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">POST http://localhost:80/api/v1/operation</span>
+<span class="s4">Content-Type: application/json</span>
+
+<span class="s4">{</span>
+    <span class="s4">&quot;name&quot;: &quot;Plato of Athens&quot;,</span>
+    <span class="s4">&quot;number&quot;: &quot;4532015112830366&quot;,</span>
+    <span class="s4">&quot;expiration&quot;: &quot;12/25&quot;,</span>
+    <span class="s4">&quot;cvv&quot;: &quot;123&quot;,</span>
+    <span class="s4">&quot;email&quot;: &quot;plato.of.athens@macunaima.com&quot;,</span>
+    <span class="s4">&quot;brand&quot;: &quot;Visa&quot;,</span>
+    <span class="s4">&quot;type&quot;: &quot;PURCHASE&quot;,</span>
+    <span class="s4">&quot;value&quot;: 100.00</span>
+<span class="s4">}</span>
+<span class="s1">```</span>
+
+<span class="s0">**</span><span class="s2">Success Response</span><span class="s0">** (</span><span class="s2">200 OK</span><span class="s0">):</span>
+<span class="s1">```</span><span class="s3">json</span>
+<span class="s4">{</span>
+    <span class="s4">&quot;id&quot;: 6,</span>
+    <span class="s4">&quot;message&quot;: &quot;SUCCESS&quot;,</span>
+    <span class="s4">&quot;description&quot;: &quot;Operation completed successfully&quot;</span>
+<span class="s4">}</span>
+<span class="s1">```</span>
+
+<span class="s0">**</span><span class="s2">Error Response</span><span class="s0">** (</span><span class="s2">200 OK with error message</span><span class="s0">):</span>
+<span class="s1">```</span><span class="s3">json</span>
+<span class="s4">{</span>
+    <span class="s4">&quot;id&quot;: 1,</span>
+    <span class="s4">&quot;message&quot;: &quot;ERROR&quot;,</span>
+    <span class="s4">&quot;description&quot;: &quot;Invalid card number&quot;</span>
+<span class="s4">}</span>
+<span class="s1">```</span>
+
+<span class="s0">**</span><span class="s2">Error Response</span><span class="s0">** (</span><span class="s2">500 Internal Server Error</span><span class="s0">):</span>
+<span class="s1">```</span>
+<span class="s4">Error processing operation: &lt;error details&gt;</span>
+<span class="s1">```</span>
+
+<span class="s1">---</span>
+
+<span class="s1">### </span><span class="s2">Validation Rules</span>
+
+<span class="s2">The system applies the following validation rules for transactions</span><span class="s0">:</span>
+
+<span class="s1">1. </span><span class="s0">**</span><span class="s2">Luhn Algorithm</span><span class="s0">**: </span><span class="s2">Card number must pass Luhn algorithm validation</span>
+<span class="s1">2. </span><span class="s0">**</span><span class="s2">Card Existence</span><span class="s0">**: </span><span class="s2">Card must exist in database</span>
+<span class="s1">3. </span><span class="s0">**</span><span class="s2">Cardholder Name</span><span class="s0">**: </span><span class="s2">Must match the name on record</span>
+<span class="s1">4. </span><span class="s0">**</span><span class="s2">Email</span><span class="s0">**: </span><span class="s2">Must match the email on record</span>
+<span class="s1">5. </span><span class="s0">**</span><span class="s2">Expiration Date</span><span class="s0">**: </span><span class="s2">Must match the expiration date on record</span>
+<span class="s1">6. </span><span class="s0">**</span><span class="s2">CVV</span><span class="s0">**: </span><span class="s2">Must match the CVV on record</span>
+<span class="s1">7. </span><span class="s0">**</span><span class="s2">Brand</span><span class="s0">**: </span><span class="s2">Must match the card brand</span>
+<span class="s1">8. </span><span class="s0">**</span><span class="s2">Balance</span><span class="s0">**: </span><span class="s2">Transaction amount must not exceed available balance</span>
+
+<span class="s1">### </span><span class="s2">Error Message IDs</span>
+
+<span class="s2">The system uses the following message IDs for operation results</span><span class="s0">:</span>
+
+<span class="s1">- </span><span class="s0">**</span><span class="s2">ID 1</span><span class="s0">**: </span><span class="s2">Invalid card number </span><span class="s0">(</span><span class="s2">Luhn algorithm failed or card not found</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">ID 2</span><span class="s0">**: </span><span class="s2">Invalid cardholder information </span><span class="s0">(</span><span class="s2">name or email mismatch</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">ID 3</span><span class="s0">**: </span><span class="s2">Invalid expiration date</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">ID 4</span><span class="s0">**: </span><span class="s2">Invalid CVV</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">ID 5</span><span class="s0">**: </span><span class="s2">Insufficient balance</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">ID 6</span><span class="s0">**: </span><span class="s2">Success</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Testing</span>
+
+<span class="s1">### </span><span class="s2">Running Tests</span>
+
+<span class="s2">Execute all tests</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">mvn test</span>
+<span class="s1">```</span>
+
+<span class="s2">Execute specific test class</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">mvn test -Dtest=CardServiceTest</span>
+<span class="s1">```</span>
+
+<span class="s2">Execute integration tests only</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">mvn test -Dtest=*IntegrationTest</span>
+<span class="s1">```</span>
+
+<span class="s1">### </span><span class="s2">Test Coverage</span>
+
+<span class="s2">The application includes comprehensive test coverage with 127 tests</span><span class="s0">:</span>
+
+<span class="s1">#### </span><span class="s2">Unit Tests</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">CardServiceTest</span><span class="s0">**: </span><span class="s2">Card service business logic </span><span class="s0">(</span><span class="s2">13 tests</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">OperationServiceTest</span><span class="s0">**: </span><span class="s2">Operation service validation </span><span class="s0">(</span><span class="s2">22 tests</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">ModelEntityTest</span><span class="s0">**: </span><span class="s2">Entity model validation </span><span class="s0">(</span><span class="s2">54 tests</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">CreditCardBrandTest</span><span class="s0">**: </span><span class="s2">Brand identification logic </span><span class="s0">(</span><span class="s2">9 tests</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">JavaLuhnAlgorithmTest</span><span class="s0">**: </span><span class="s2">Luhn algorithm implementation </span><span class="s0">(</span><span class="s2">17 tests</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">OperationControllerTest</span><span class="s0">**: </span><span class="s2">Controller layer testing </span><span class="s0">(</span><span class="s2">2 tests</span><span class="s0">)</span>
+
+<span class="s1">#### </span><span class="s2">Integration Tests</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">CardControllerIntegrationTest</span><span class="s0">**: </span><span class="s2">End-to-end API testing </span><span class="s0">(</span><span class="s2">10 tests</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">Postman Testing</span>
+
+<span class="s2">Import the provided Postman collection</span><span class="s0">: </span><span class="s2">`Card_Authorizer_Postman_Collection.json`</span>
+
+<span class="s2">The collection includes</span><span class="s0">:</span>
+
+<span class="s1">1. </span><span class="s0">**</span><span class="s2">Card Operations</span><span class="s0">** (</span><span class="s2">3 tests</span><span class="s0">)</span>
+   <span class="s1">- </span><span class="s2">Get valid Visa card</span>
+   <span class="s1">- </span><span class="s2">Get valid Mastercard</span>
+   <span class="s1">- </span><span class="s2">Card not found scenario</span>
+
+<span class="s1">2. </span><span class="s0">**</span><span class="s2">Transaction Operations</span><span class="s0">** (</span><span class="s2">4 tests</span><span class="s0">)</span>
+   <span class="s1">- </span><span class="s2">Valid purchase transactions</span>
+   <span class="s1">- </span><span class="s2">Small and large amount transactions</span>
+   <span class="s1">- </span><span class="s2">Multi-brand support</span>
+
+<span class="s1">3. </span><span class="s0">**</span><span class="s2">Validation Tests</span><span class="s0">** (</span><span class="s2">8 tests</span><span class="s0">)</span>
+   <span class="s1">- </span><span class="s2">Invalid Luhn algorithm</span>
+   <span class="s1">- </span><span class="s2">Invalid cardholder information</span>
+   <span class="s1">- </span><span class="s2">Invalid card details </span><span class="s0">(</span><span class="s2">CVV, expiration</span><span class="s0">)</span>
+   <span class="s1">- </span><span class="s2">Insufficient balance</span>
+   <span class="s1">- </span><span class="s2">Card number format validation</span>
+
+<span class="s1">4. </span><span class="s0">**</span><span class="s2">Edge Cases</span><span class="s0">** (</span><span class="s2">6 tests</span><span class="s0">)</span>
+   <span class="s1">- </span><span class="s2">Exact balance transactions</span>
+   <span class="s1">- </span><span class="s2">Zero and negative amounts</span>
+   <span class="s1">- </span><span class="s2">Missing required fields</span>
+   <span class="s1">- </span><span class="s2">Very long card numbers</span>
+
+<span class="s1">5. </span><span class="s0">**</span><span class="s2">Performance Tests</span><span class="s0">** (</span><span class="s2">2 tests</span><span class="s0">)</span>
+   <span class="s1">- </span><span class="s2">Sequential transaction processing</span>
+   <span class="s1">- </span><span class="s2">Card retrieval performance</span>
+
+<span class="s1">#### </span><span class="s2">Using Postman Collection</span>
+
+<span class="s1">1. </span><span class="s2">Import the collection file into Postman</span>
+<span class="s1">2. </span><span class="s2">Set the environment variable</span><span class="s0">:</span>
+   <span class="s1">- </span><span class="s2">`base_url`</span><span class="s0">: </span><span class="s2">`</span><span class="s5">http://localhost:80</span><span class="s2">`</span>
+<span class="s1">3. </span><span class="s2">Run individual tests or the entire collection</span>
+<span class="s1">4. </span><span class="s2">Review test results in the Postman test runner</span>
+
+<span class="s0">![</span><span class="s2">TransactionStateDiagramTestsUseCase.png</span><span class="s0">](</span><span class="s2">\uml%2Ftests%2Fimages%2FTransactionStateDiagramTestsUseCase.png</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">USE CASE 01</span>
+<span class="s0">![</span><span class="s2">UC_001_Sequence_Diagram.png</span><span class="s0">](</span><span class="s2">\uml%2Ftests%2Fimages%2FUC_001_Sequence_Diagram.png</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">USE CASE 02</span>
+<span class="s0">![</span><span class="s2">UC_002_Sequence_Diagram.png</span><span class="s0">](</span><span class="s2">\uml%2Ftests%2Fimages%2FUC_002_Sequence_Diagram.png</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">USE CASE 03</span>
+<span class="s0">![</span><span class="s2">UC_003_Activity_Diagram.png</span><span class="s0">](</span><span class="s2">\uml%2Ftests%2Fimages%2FUC_003_Activity_Diagram.png</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">USE CASE 04</span>
+<span class="s0">![</span><span class="s2">UC_004_Sequence_Diagram.png</span><span class="s0">](</span><span class="s2">/uml%2Ftests%2Fimages%2FUC_004_Sequence_Diagram.png</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">USE CASE 05</span>
+<span class="s0">![</span><span class="s2">UC_005_Sequence_Diagram.png</span><span class="s0">](</span><span class="s2">/uml%2Ftests%2Fimages%2FUC_005_Sequence_Diagram.png</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">USE CASE 06</span>
+<span class="s0">![</span><span class="s2">UC_006_Sequence_Diagram.png</span><span class="s0">](</span><span class="s2">/uml%2Ftests%2Fimages%2FUC_006_Sequence_Diagram.png</span><span class="s0">)</span>
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Database Schema</span>
+
+<span class="s1">### </span><span class="s2">Entity Relationship Diagram</span>
+
+
+<span class="s0">![</span><span class="s2">EntityRelationshipDiagram.png</span><span class="s0">](</span><span class="s2">/uml%2Fimages%2FEntityRelationshipDiagram.png</span><span class="s0">)</span>
+
+<span class="s1">### </span><span class="s2">Tables</span>
+
+<span class="s1">#### </span><span class="s2">card</span>
+<span class="s1">- </span><span class="s2">`id` </span><span class="s0">(</span><span class="s2">BIGINT, PK</span><span class="s0">): </span><span class="s2">Unique identifier</span>
+<span class="s1">- </span><span class="s2">`number` </span><span class="s0">(</span><span class="s2">VARCHAR, UNIQUE, NOT NULL</span><span class="s0">): </span><span class="s2">Card number</span>
+<span class="s1">- </span><span class="s2">`expiration` </span><span class="s0">(</span><span class="s2">VARCHAR</span><span class="s0">): </span><span class="s2">Expiration date</span>
+<span class="s1">- </span><span class="s2">`cvv` </span><span class="s0">(</span><span class="s2">VARCHAR</span><span class="s0">): </span><span class="s2">CVV code</span>
+<span class="s1">- </span><span class="s2">`limits` </span><span class="s0">(</span><span class="s2">FLOAT</span><span class="s0">): </span><span class="s2">Credit limit</span>
+<span class="s1">- </span><span class="s2">`balance` </span><span class="s0">(</span><span class="s2">FLOAT</span><span class="s0">): </span><span class="s2">Available balance</span>
+<span class="s1">- </span><span class="s2">`client_id` </span><span class="s0">(</span><span class="s2">BIGINT, FK</span><span class="s0">): </span><span class="s2">Client reference</span>
+<span class="s1">- </span><span class="s2">`brand_id` </span><span class="s0">(</span><span class="s2">BIGINT, FK</span><span class="s0">): </span><span class="s2">Brand reference</span>
+
+<span class="s1">#### </span><span class="s2">client</span>
+<span class="s1">- </span><span class="s2">`id` </span><span class="s0">(</span><span class="s2">BIGINT, PK</span><span class="s0">): </span><span class="s2">Unique identifier</span>
+<span class="s1">- </span><span class="s2">`name` </span><span class="s0">(</span><span class="s2">VARCHAR</span><span class="s0">): </span><span class="s2">Cardholder name</span>
+<span class="s1">- </span><span class="s2">`email` </span><span class="s0">(</span><span class="s2">VARCHAR</span><span class="s0">): </span><span class="s2">Cardholder email</span>
+
+<span class="s1">#### </span><span class="s2">brand</span>
+<span class="s1">- </span><span class="s2">`id` </span><span class="s0">(</span><span class="s2">BIGINT, PK</span><span class="s0">): </span><span class="s2">Unique identifier</span>
+<span class="s1">- </span><span class="s2">`name` </span><span class="s0">(</span><span class="s2">VARCHAR</span><span class="s0">): </span><span class="s2">Brand name </span><span class="s0">(</span><span class="s2">Visa, Mastercard, etc.</span><span class="s0">)</span>
+
+<span class="s1">#### </span><span class="s2">history</span>
+<span class="s1">- </span><span class="s2">`id` </span><span class="s0">(</span><span class="s2">BIGINT, PK</span><span class="s0">): </span><span class="s2">Unique identifier</span>
+<span class="s1">- </span><span class="s2">`card_id` </span><span class="s0">(</span><span class="s2">BIGINT, FK</span><span class="s0">): </span><span class="s2">Card reference</span>
+<span class="s1">- </span><span class="s2">`messages_id` </span><span class="s0">(</span><span class="s2">BIGINT, FK</span><span class="s0">): </span><span class="s2">Message reference</span>
+<span class="s1">- </span><span class="s2">`date_operation` </span><span class="s0">(</span><span class="s2">TIMESTAMP</span><span class="s0">): </span><span class="s2">Transaction timestamp</span>
+<span class="s1">- </span><span class="s2">`value_operation` </span><span class="s0">(</span><span class="s2">FLOAT</span><span class="s0">): </span><span class="s2">Transaction amount</span>
+<span class="s1">- </span><span class="s2">`type_operation` </span><span class="s0">(</span><span class="s2">VARCHAR</span><span class="s0">): </span><span class="s2">Operation type</span>
+
+<span class="s1">#### </span><span class="s2">messages</span>
+<span class="s1">- </span><span class="s2">`id` </span><span class="s0">(</span><span class="s2">BIGINT, PK</span><span class="s0">): </span><span class="s2">Unique identifier</span>
+<span class="s1">- </span><span class="s2">`message` </span><span class="s0">(</span><span class="s2">VARCHAR</span><span class="s0">): </span><span class="s2">Message code </span><span class="s0">(</span><span class="s2">SUCCESS, ERROR</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s2">`description` </span><span class="s0">(</span><span class="s2">VARCHAR</span><span class="s0">): </span><span class="s2">Message description</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Project Structure</span>
+
+<span class="s1">```</span>
+<span class="s4">card_authorizer/</span>
+<span class="s4">├── src/</span>
+<span class="s4">│   ├── main/</span>
+<span class="s4">│   │   ├── java/com/tus/oop1/card_authorizer/</span>
+<span class="s4">│   │   │   ├── CardAuthorizerApplication.java</span>
+<span class="s4">│   │   │   ├── controller/</span>
+<span class="s4">│   │   │   │   ├── CardController.java</span>
+<span class="s4">│   │   │   │   └── OperationController.java</span>
+<span class="s4">│   │   │   ├── dao/</span>
+<span class="s4">│   │   │   │   └── OperationDAO.java</span>
+<span class="s4">│   │   │   ├── model/</span>
+<span class="s4">│   │   │   │   ├── Brand.java</span>
+<span class="s4">│   │   │   │   ├── Card.java</span>
+<span class="s4">│   │   │   │   ├── Client.java</span>
+<span class="s4">│   │   │   │   ├── History.java</span>
+<span class="s4">│   │   │   │   └── Messages.java</span>
+<span class="s4">│   │   │   ├── repo/</span>
+<span class="s4">│   │   │   │   ├── BrandRepo.java</span>
+<span class="s4">│   │   │   │   ├── CardRepo.java</span>
+<span class="s4">│   │   │   │   ├── ClientRepo.java</span>
+<span class="s4">│   │   │   │   ├── HistoryRepo.java</span>
+<span class="s4">│   │   │   │   └── MessagesRepo.java</span>
+<span class="s4">│   │   │   ├── service/</span>
+<span class="s4">│   │   │   │   ├── CardService.java</span>
+<span class="s4">│   │   │   │   └── OperationService.java</span>
+<span class="s4">│   │   │   └── util/</span>
+<span class="s4">│   │   │       ├── CreditCardBrand.java</span>
+<span class="s4">│   │   │       └── JavaLuhnAlgorithm.java</span>
+<span class="s4">│   │   └── resources/</span>
+<span class="s4">│   │       └── application.properties</span>
+<span class="s4">│   └── test/</span>
+<span class="s4">│       └── java/com/tus/oop1/card_authorizer/</span>
+<span class="s4">│           ├── CardAuthorizerApplicationTests.java</span>
+<span class="s4">│           ├── controller/</span>
+<span class="s4">│           │   └── OperationControllerTest.java</span>
+<span class="s4">│           ├── integration/</span>
+<span class="s4">│           │   └── CardControllerIntegrationTest.java</span>
+<span class="s4">│           ├── model/</span>
+<span class="s4">│           │   └── ModelEntityTest.java</span>
+<span class="s4">│           ├── service/</span>
+<span class="s4">│           │   ├── CardServiceTest.java</span>
+<span class="s4">│           │   └── OperationServiceTest.java</span>
+<span class="s4">│           └── util/</span>
+<span class="s4">│               ├── CreditCardBrandTest.java</span>
+<span class="s4">│               └── JavaLuhnAlgorithmTest.java</span>
+<span class="s4">├── Card_Authorizer_Postman_Collection.json</span>
+<span class="s4">├── pom.xml</span>
+<span class="s4">└── README.md</span>
+<span class="s1">```</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Development</span>
+
+<span class="s1">### </span><span class="s2">Code Style</span>
+
+<span class="s2">The project follows standard Java coding conventions</span><span class="s0">:</span>
+
+<span class="s1">- </span><span class="s2">Package naming</span><span class="s0">: </span><span class="s2">lowercase </span><span class="s0">(</span><span class="s2">e.g., `com.tus.oop1.card_authorizer`</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s2">Class naming</span><span class="s0">: </span><span class="s2">PascalCase </span><span class="s0">(</span><span class="s2">e.g., `CardController`</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s2">Method naming</span><span class="s0">: </span><span class="s2">camelCase </span><span class="s0">(</span><span class="s2">e.g., `executeOperation`</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s2">Constant naming</span><span class="s0">: </span><span class="s2">UPPER_SNAKE_CASE</span>
+
+<span class="s1">### </span><span class="s2">Lombok Annotations</span>
+
+<span class="s2">The project uses Lombok to reduce boilerplate code</span><span class="s0">:</span>
+
+<span class="s1">- </span><span class="s2">`@Data`</span><span class="s0">: </span><span class="s2">Generates getters, setters, toString, equals, and hashCode</span>
+<span class="s1">- </span><span class="s2">`@Getter` / `@Setter`</span><span class="s0">: </span><span class="s2">Generates getter/setter methods</span>
+<span class="s1">- </span><span class="s2">`@NoArgsConstructor`</span><span class="s0">: </span><span class="s2">Generates no-argument constructor</span>
+<span class="s1">- </span><span class="s2">`@AllArgsConstructor`</span><span class="s0">: </span><span class="s2">Generates all-arguments constructor</span>
+<span class="s1">- </span><span class="s2">`@ToString`</span><span class="s0">: </span><span class="s2">Generates toString method</span>
+<span class="s1">- </span><span class="s2">`@EqualsAndHashCode`</span><span class="s0">: </span><span class="s2">Generates equals and hashCode methods</span>
+
+<span class="s1">### </span><span class="s2">Adding New Features</span>
+
+<span class="s1">1. </span><span class="s2">Create model entities in `model/` package</span>
+<span class="s1">2. </span><span class="s2">Create repository interfaces in `repo/` package</span>
+<span class="s1">3. </span><span class="s2">Implement business logic in `service/` package</span>
+<span class="s1">4. </span><span class="s2">Create REST endpoints in `controller/` package</span>
+<span class="s1">5. </span><span class="s2">Add comprehensive tests in `test/` directory</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Sample Test Data</span>
+
+<span class="s1">### </span><span class="s2">Valid Cards</span>
+
+<span class="s1">#### </span><span class="s2">Visa Card</span>
+<span class="s1">```</span><span class="s3">json</span>
+<span class="s4">{</span>
+    <span class="s4">&quot;number&quot;: &quot;4532015112830366&quot;,</span>
+    <span class="s4">&quot;expiration&quot;: &quot;12/25&quot;,</span>
+    <span class="s4">&quot;cvv&quot;: &quot;123&quot;,</span>
+    <span class="s4">&quot;name&quot;: &quot;John Doe&quot;,</span>
+    <span class="s4">&quot;email&quot;: &quot;john.doe@example.com&quot;,</span>
+    <span class="s4">&quot;brand&quot;: &quot;Visa&quot;,</span>
+    <span class="s4">&quot;balance&quot;: 3000.00,</span>
+    <span class="s4">&quot;limits&quot;: 5000.00</span>
+<span class="s4">}</span>
+<span class="s1">```</span>
+
+<span class="s1">#### </span><span class="s2">Mastercard</span>
+<span class="s1">```</span><span class="s3">json</span>
+<span class="s4">{</span>
+    <span class="s4">&quot;number&quot;: &quot;5425233430109903&quot;,</span>
+    <span class="s4">&quot;expiration&quot;: &quot;11/24&quot;,</span>
+    <span class="s4">&quot;cvv&quot;: &quot;456&quot;,</span>
+    <span class="s4">&quot;name&quot;: &quot;John Doe&quot;,</span>
+    <span class="s4">&quot;email&quot;: &quot;john.doe@example.com&quot;,</span>
+    <span class="s4">&quot;brand&quot;: &quot;Mastercard&quot;,</span>
+    <span class="s4">&quot;balance&quot;: 2000.00,</span>
+    <span class="s4">&quot;limits&quot;: 3000.00</span>
+<span class="s4">}</span>
+<span class="s1">```</span>
+
+<span class="s1">### </span><span class="s2">Other Valid Card Numbers </span><span class="s0">(</span><span class="s2">for testing Luhn algorithm</span><span class="s0">)</span>
+
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Visa</span><span class="s0">**: </span><span class="s2">4111111111111111</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Mastercard</span><span class="s0">**: </span><span class="s2">5555555555554444</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">American Express</span><span class="s0">**: </span><span class="s2">378282246310005</span>
+<span class="s1">- </span><span class="s0">**</span><span class="s2">Discover</span><span class="s0">**: </span><span class="s2">6011111111111117</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Common Issues and Solutions</span>
+
+<span class="s1">### </span><span class="s2">Port Already in Use</span>
+
+<span class="s2">If port 80 is already in use, change the port in `application.properties`</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">properties</span>
+<span class="s4">server.port=8080</span>
+<span class="s1">```</span>
+
+<span class="s1">### </span><span class="s2">Database Connection Issues</span>
+
+<span class="s2">If you encounter database connection issues, ensure H2 configuration is correct</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">properties</span>
+<span class="s4">spring.datasource.url=jdbc:h2:mem:card_authorizer</span>
+<span class="s4">spring.datasource.driverClassName=org.h2.Driver</span>
+<span class="s1">```</span>
+
+<span class="s1">### </span><span class="s2">Test Failures</span>
+
+<span class="s2">If tests fail, ensure the application is not running on the same port</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4"># Stop the application before running tests</span>
+<span class="s4">mvn test</span>
+<span class="s1">```</span>
+
+<span class="s1">### </span><span class="s2">Build Failures</span>
+
+<span class="s2">Clean and rebuild the project</span><span class="s0">:</span>
+<span class="s1">```</span><span class="s3">bash</span>
+<span class="s4">mvn clean install -U</span>
+<span class="s1">```</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Performance Considerations</span>
+
+<span class="s1">### </span><span class="s2">Database Optimization</span>
+
+<span class="s1">- </span><span class="s2">Use an in-memory H2 database for fast development</span>
+<span class="s1">- </span><span class="s2">Indexes on card number for quick lookups</span>
+<span class="s1">- </span><span class="s2">Lazy loading for relationships to reduce memory footprint</span>
+
+<span class="s1">### </span><span class="s2">API Response Times</span>
+
+<span class="s2">Expected response times</span><span class="s0">:</span>
+<span class="s1">- </span><span class="s2">Card retrieval</span><span class="s0">: &lt; </span><span class="s2">500ms</span>
+<span class="s1">- </span><span class="s2">Transaction processing</span><span class="s0">: &lt; </span><span class="s2">2000ms</span>
+
+<span class="s1">### </span><span class="s2">Scalability</span>
+
+<span class="s2">For production deployment, consider</span><span class="s0">:</span>
+<span class="s1">- </span><span class="s2">Migrating to PostgresSQL or MySQL</span>
+<span class="s1">- </span><span class="s2">Implementing caching </span><span class="s0">(</span><span class="s2">Redis</span><span class="s0">)</span>
+<span class="s1">- </span><span class="s2">Adding connection pooling</span>
+<span class="s1">- </span><span class="s2">Horizontal scaling with load balancer</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Security Considerations</span>
+
+<span class="s0">**</span><span class="s2">Note</span><span class="s0">**: </span><span class="s2">This is a demonstration application. For production use, implement</span><span class="s0">:</span>
+
+<span class="s1">1. </span><span class="s0">**</span><span class="s2">Authentication &amp; Authorization</span><span class="s0">**: </span><span class="s2">Add Spring Security</span>
+<span class="s1">2. </span><span class="s0">**</span><span class="s2">HTTPS</span><span class="s0">**: </span><span class="s2">Enable SSL/TLS encryption</span>
+<span class="s1">3. </span><span class="s0">**</span><span class="s2">Input Validation</span><span class="s0">**: </span><span class="s2">Enhance validation rules</span>
+<span class="s1">4. </span><span class="s0">**</span><span class="s2">Rate Limiting</span><span class="s0">**: </span><span class="s2">Prevent abuse</span>
+<span class="s1">5. </span><span class="s0">**</span><span class="s2">Logging &amp; Monitoring</span><span class="s0">**: </span><span class="s2">Add comprehensive logging</span>
+<span class="s1">6. </span><span class="s0">**</span><span class="s2">Database Security</span><span class="s0">**: </span><span class="s2">Use encrypted connections</span>
+<span class="s1">7. </span><span class="s0">**</span><span class="s2">CVV Handling</span><span class="s0">**: </span><span class="s2">Never log or store CVV permanently</span>
+<span class="s1">8. </span><span class="s0">**</span><span class="s2">PCI DSS Compliance</span><span class="s0">**: </span><span class="s2">Follow payment card industry standards</span>
+
+<span class="s1">---</span>
+
+
+<span class="s1">## </span><span class="s2">License</span>
+
+<span class="s2">This project was developed as part of academic coursework at Technology University Shannon - Athlone </span><span class="s0">(</span><span class="s2">TUS</span><span class="s0">)</span><span class="s2">.</span>
+
+<span class="s0">**</span><span class="s2">Student</span><span class="s0">**: </span><span class="s2">Weverton de Souza Castanho  </span>
+<span class="s0">**</span><span class="s2">Email</span><span class="s0">**: </span><span class="s2">wevertonsc@gmail.com  </span>
+<span class="s0">**</span><span class="s2">Course</span><span class="s0">**: </span><span class="s2">Object-Oriented Programming I </span><span class="s0">(</span><span class="s2">AL_KCNCM_9_1</span><span class="s0">) </span><span class="s2">29468  </span>
+<span class="s0">**</span><span class="s2">Date</span><span class="s0">**: </span><span class="s2">November 2025</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">Contact</span>
+
+<span class="s2">For questions or support, please contact</span><span class="s0">:</span>
+
+<span class="s0">**</span><span class="s2">Weverton de Souza Castanho</span><span class="s0">**  </span>
+
+<span class="s0">**</span><span class="s2">Email</span><span class="s0">:** </span><span class="s2">wevertonsc@gmail.com / A00324822@student.tus.ie </span>
+
+<span class="s0">**</span><span class="s2">Institution</span><span class="s0">:** </span><span class="s2">Technology University Shannon - Athlone </span><span class="s0">(</span><span class="s2">TUS</span><span class="s0">)</span>
+
+<span class="s1">---</span>
+
+<span class="s1">## </span><span class="s2">References</span>
+
+<span class="s1">- </span><span class="s2">Spring Boot framework and documentation</span>
+<span class="s1">- </span><span class="s2">H2 Database project</span>
+<span class="s1">- </span><span class="s2">Lombok project for code generation</span>
+<span class="s1">- </span><span class="s2">JUnit and Mockito testing frameworks</span>
+<span class="s1">- </span><span class="s2">TUS Object-Oriented Programming I course materials</span>
+
+<span class="s1">---</span>
+
+<span class="s0">**</span><span class="s2">Version</span><span class="s0">**: </span><span class="s2">1.0.0  </span>
+
+<span class="s0">**</span><span class="s2">Last Updated</span><span class="s0">**: </span><span class="s2">November 2025</span>
+
+
+
+</pre>
+</body>
+</html>
